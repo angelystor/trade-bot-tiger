@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tiger Bridge</title>
+<style>
+  body { font-family: -apple-system, sans-serif; max-width: 480px; margin: 60px auto; padding: 0 20px; color: #222; }
+  h1 { font-size: 20px; }
+  code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; }
+  .sym { font-weight: 700; color: #d97706; }
+  a { color: #2563eb; }
+</style>
+</head>
+<body>
+<h1>Opening <span class="sym" id="sym">…</span> in Tiger Trade</h1>
+<p id="status">Redirecting…</p>
+<p>If the app doesn't open in a few seconds: <a id="fallback" href="<https://www.tigerbrokers.com.sg>/">view on the Tiger SG website</a>.</p>
+<p style="color:#888;font-size:13px;margin-top:40px">
+  This is a redirector for <a href="<https://github.com/angelystor/tiger-bridge>">tiger-bridge</a>.
+  Hit <code>/SYMBOL</code> to deep-link into the Tiger Trade app on iOS/Android.
+</p>
+<script>
+  // Custom scheme the Tiger Trade app registers. Edit if Tiger changes it
+  // — the rest of the redirector keeps working.
+  const SCHEME_TEMPLATE = "tigerbrokers://stockDetail?symbol={SYMBOL}&market=US";
+  const WEB_FALLBACK_TEMPLATE = "<https://www.tigerbrokers.com.sg/stock/{SYMBOL}>";
+
+  // Last non-empty path segment is the symbol.
+  // /tiger-bridge/AAPL → "AAPL"; /tiger-bridge/AAPL/ → "AAPL".
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  const raw = parts.length ? parts[parts.length - 1] : '';
+  const symbol = raw.toUpperCase().replace(/[^A-Z0-9.]/g, '');
+
+  const symEl = document.getElementById('sym');
+  const fbEl = document.getElementById('fallback');
+  const statusEl = document.getElementById('status');
+
+  if (!symbol) {
+    symEl.textContent = '(no symbol)';
+    statusEl.textContent = 'Tap a ticker in the trade-bot Telegram screener to land here.';
+  } else {
+    symEl.textContent = symbol;
+    fbEl.href = WEB_FALLBACK_TEMPLATE.replace('{SYMBOL}', encodeURIComponent(symbol));
+    const appUrl = SCHEME_TEMPLATE.replace('{SYMBOL}', encodeURIComponent(symbol));
+    // Replace so the redirector page is not in browser history — back
+    // button returns to Telegram cleanly.
+    window.location.replace(appUrl);
+  }
+</script>
+</body>
+</html>
