@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tiger-bridge</title>
+<style>
+  body { font-family: -apple-system, sans-serif; max-width: 560px; margin: 60px auto; padding: 0 20px; color: #222; line-height: 1.5; }
+  code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  pre { background: #f4f4f4; padding: 12px; border-radius: 6px; overflow-x: auto; }
+</style>
+</head>
+<body>
+<h1>tiger-bridge</h1>
+<p>Static redirector that bridges <code>https://</code> URLs to the Tiger Trade
+custom URL scheme so Telegram (which only renders http/https hrefs as
+clickable) can deep-link into the iOS/Android Tiger app at a specific
+stock.</p>
+
+<h2>Usage</h2>
+<pre><https://angelystor.github.io/trade-bot-tiger/AAPL</pre>>
+<p>→ serves <code>404.html</code> (per GitHub Pages convention) → JS reads
+<code>AAPL</code> from the path → <code>window.location.replace("tigerbrokers://stockDetail?symbol=AAPL&amp;market=US")</code>.</p>
+
+<h2>Editing</h2>
+<p>If Tiger changes the custom scheme, edit <code>SCHEME_TEMPLATE</code> at
+the top of the <code>&lt;script&gt;</code> in <code>404.html</code> — the
+redirector handles every symbol via the URL path, so no per-symbol files
+need updating.</p>
+</body>
+</html>
